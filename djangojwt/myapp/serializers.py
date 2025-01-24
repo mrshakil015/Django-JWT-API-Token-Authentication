@@ -19,7 +19,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['id','username','first_name','last_name','email','password']
+        fields = ['id','username','first_name','last_name','email','password','password2']
         
     def validate_username(self, username):
         if User.objects.filter(username=username).exists():
@@ -44,9 +44,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return user
 
 class UserLoginSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(read_only=True)
+    username = serializers.CharField()
     password = serializers.CharField(write_only=True)
     
     class Meta:
         model = User
-        fields = ['id','username','password']
+        fields = ['id','username', 'password']
