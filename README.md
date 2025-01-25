@@ -4,6 +4,10 @@
 - [Project Setup](#project-setup)
 - [Configure JWT Token](#configure-jwt-token)
 - [Create Serializer Class](#create-serializer-class)
+    - [User Serializer](#userserializer)
+    - [User Register Serializer](#userregisterserializer)
+    - [User Login Serializer](#userloginserializer)
+    - [User Login OTP Serializer](#userloginotpserializer)
 - [Create View Methodology](#create-view-methodology)
 - [Email Configuration Documentations](#email-configuration)
 
@@ -97,6 +101,8 @@ To configure the serializer create `serializers.py` file inside the `app`:
             model = User
             fields = ['id','username','email','date_joined']
     ```
+⬆️ [Go to Context](#context)
+
 ### UserRegisterSerializer:
 - Create `UserRegisterSerializer` class for register the user information:
     ```python
@@ -144,6 +150,7 @@ To configure the serializer create `serializers.py` file inside the `app`:
         user.save()
         return user
     ```
+⬆️ [Go to Context](#context)
 
 ### UserLoginSerializer:
 - Create user login serializer
@@ -155,6 +162,14 @@ To configure the serializer create `serializers.py` file inside the `app`:
         class Meta:
             model = User
             fields = ['username', 'password']
+    ```
+⬆️ [Go to Context](#context)
+### UserLoginOTPSerializer:
+- Create user login otp serializer
+    ```python
+    class UserLoginOTPSerializer(serializers.Serializer):
+        username = serializers.CharField()
+        otp = serializers.CharField(max_length=6)
     ```
 ⬆️ [Go to Context](#context)
 
@@ -200,6 +215,7 @@ Create viewsets using diffent api view like: `ModelViewSet`, `GenericAPIView`, `
             return Response(response, status=status.HTTP_201_CREATED)
         raise ValidationError(serializer.errors, code=status.HTTP_400_BAD_REQUEST)
     ```
+⬆️ [Go to Context](#context)
 
 ### User Login View:
 - Here include the user login view. With the login functionalities include the user `JWT` Authentication and Email based `2FA OTP` authentication. Step by step process how a user can access their data into their dashboard or account:
@@ -251,9 +267,9 @@ Create viewsets using diffent api view like: `ModelViewSet`, `GenericAPIView`, `
         )
 
     ```
+⬆️ [Go to Context](#context)
 
 ## Email Configuration:
-
 -  Install `python-decouple`.It is a popular package for managing environment variables in Django.
     ```cmd
     pip install python-decouple
@@ -297,5 +313,5 @@ Create viewsets using diffent api view like: `ModelViewSet`, `GenericAPIView`, `
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[user.email],
         )
-
     ```
+⬆️ [Go to Context](#context)
