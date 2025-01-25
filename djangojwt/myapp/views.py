@@ -13,6 +13,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import UserSerializer, UserRegisterSerializer, UserLoginSerializer, UserLoginOTPSerializer
 
 from django.core.mail import send_mail
+from django.conf import settings
 from django.utils.crypto import get_random_string
 
 otp_storage = {}
@@ -67,7 +68,7 @@ class LoginView(generics.GenericAPIView):
         send_mail(
             subject="Your OTP for Login",
             message=f"Your OTP is {otp}. It is valid for 5 minutes.",
-            from_email="shakil.eub.cse@gmail.com",
+            from_email=settings.EMAIL_HOST_USER,
             recipient_list=[user.email],
         )
 
