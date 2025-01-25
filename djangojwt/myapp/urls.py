@@ -1,5 +1,5 @@
 from django.urls import path,include
-from .views import UserRegisterViewSet,LoginView, DashboardView
+from .views import UserRegisterViewSet,LoginView, DashboardView,VerifyOtpView
 from rest_framework.routers import DefaultRouter
 
 from drf_yasg.views import get_schema_view
@@ -21,6 +21,7 @@ urlpatterns = [
     path('',include(router.urls)),
     path('login/',LoginView.as_view(), name='login'),
     path('dashboard/',DashboardView.as_view(), name='dashboard'),  
+    path('verify-otp/', VerifyOtpView.as_view(), name='verify-otp'),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='redoc'),   
     

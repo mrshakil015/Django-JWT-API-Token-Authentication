@@ -50,3 +50,8 @@ class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'password']
+
+class UserLoginOTPSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    otp = serializers.CharField(max_length=6)
+    
