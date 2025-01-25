@@ -1,10 +1,11 @@
-# Django-JWT-API-Token-Authentication
+# Django JWT API Token and Email OTP Authentication
 
 ## Context
 - [Project Setup](#project-setup)
 - [Configure JWT Token](#configure-jwt-token)
 - [Create Serializer Class](#create-serializer-class)
 - [Create View Methodology](#create-view-methodology)
+- [Email Configuration Documentations](#email-configuration)
 
 ### Project Setup
 1. At first Create Environment:
@@ -206,6 +207,7 @@ Create viewsets using diffent api view like: `ModelViewSet`, `GenericAPIView`, `
     - After that send a `OTP` user registered email address.
     - To validate the OTP goto `/api/verify-otp/` endpoint and verify the otp using username and otp.
     - After validation generate a `refresh token` and `access token`. Using the `access token` user can access their data.
+- Before create login method configure the email configuration. Show the configuration here: [Click Here](#email-configuration)
 - Now create `Loginview` method. At first need to import some libries:
     ```python
     from rest_framework.exceptions import ValidationError
@@ -246,6 +248,54 @@ Create viewsets using diffent api view like: `ModelViewSet`, `GenericAPIView`, `
             "message": "OTP sent to your registered email address."
             },
             status=status.HTTP_200_OK
+        )
+
+    ```
+
+## Email Configuration:
+
+-  Install `python-decouple`.It is a popular package for managing environment variables in Django.
+    ```cmd
+    pip install python-decouple
+    ```
+- Create a `.env` file in the root directory of your project (where manage.py is located). This file will store your sensitive data.
+    ```python
+    EMAIL_HOST=smtp.gmail.com
+    EMAIL_PORT=587
+    EMAIL_USE_TLS=True
+    EMAIL_USE_SSL=False
+    EMAIL_HOST_USER=your-email@gmail.com
+    EMAIL_HOST_PASSWORD=your-email-app-password
+    ```
+- Now how to get the email `EMAIL_HOST_PASSWORD`:
+    - Go to the Manage Google Account
+    - If 2FA not enable at first enable the 2FA
+    - Then Search `App Passwords`. And go to this page.
+    - Set any app name like: (e.g. Django App etc.)
+    - After that click create. Then it provide a 16-characters password. like this: `takv dcgx ldzo poll`. 
+    - Then copy it and and using on the project.
+- Configure Email setting inside the `settings.py`:
+    ```python
+    from decouple import config
+
+    EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+    EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+    EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+    EMAIL_USE_SSL = config('EMAIL_USE_SSL', default=False, cast=bool)
+    EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+    ```
+- Sending Email views:
+    ```python
+    from django.core.mail import send_mail
+    from django.conf import settings
+
+    def send_otp_email(user, otp):
+        send_mail(
+            subject="Your OTP for Login",
+            message=f"Your OTP is {otp}. It is valid for 5 minutes.",
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[user.email],
         )
 
     ```
