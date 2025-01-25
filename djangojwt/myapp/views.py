@@ -56,7 +56,7 @@ class LoginView(generics.GenericAPIView):
         
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
-        user_serializer = UserLoginSerializer(user)
+        user_serializer = UserSerializer(user)
         
         return Response(
             {
@@ -66,3 +66,15 @@ class LoginView(generics.GenericAPIView):
             },
             status=status.HTTP_200_OK
         )
+        
+class DashboardView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        user = request.user
+        user_serializer = UserSerializer(user)
+        return Response({
+            'message': 'Welcome to the Dashboard',
+            'user': user_serializer.data
+        },status=status.HTTP_200_OK)
+    
