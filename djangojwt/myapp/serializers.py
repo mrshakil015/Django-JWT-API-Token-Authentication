@@ -6,7 +6,7 @@ from rest_framework.exceptions import ValidationError
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','username','email','date_joined']
+        fields = ['id','username','email','first_name','last_name','date_joined']
         
 class UserRegisterSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(read_only=True)
