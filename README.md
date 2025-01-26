@@ -301,6 +301,21 @@ Create viewsets using diffent api view like: `ModelViewSet`, `GenericAPIView`, `
     EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
     EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
     ```
+    If fetch any error using `from decouple import config` this package. Then used bellow method:
+    ```python
+    from dotenv import load_dotenv
+    import os
+
+    # Email configuration from environment variables
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+    EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+    EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+    EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
+    EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'False') == 'True'
+    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+    ```
 - Sending Email views:
     ```python
     from django.core.mail import send_mail
