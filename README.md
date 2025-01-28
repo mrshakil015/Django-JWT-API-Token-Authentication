@@ -267,6 +267,50 @@ Create viewsets using diffent api view like: `ModelViewSet`, `GenericAPIView`, `
         )
 
     ```
+### OTP Verify View:
+- This function used of verify the otp.
+    ```python
+    class VerifyOtpView(generics.GenericAPIView):
+    serializer_class = UserLoginOTPSerializer
+    
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        # Extract validated data
+        username = serializer.validated_data.get('username')
+        otp = serializer.validated_data.get('otp')
+
+        # Check if OTP exists for the username and validate it
+        if username not in otp_storage:
+            raise ValidationError({"message": "OTP has not been sent or expired or username not valid."})
+        
+        # Validate OTP
+        if otp_storage[username] != otp:
+            raise ValidationError({"message": "Invalid OTP."})
+
+        # Clean up OTP after verification
+        del otp_storage[username]
+
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise ValidationError({"message": "User does not exist."})
+
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        user_serializer = UserSerializer(user)
+
+
+        return Response(
+            {
+                'access': access_token,
+                'refresh': str(refresh),
+                'user': user_serializer.data,
+            },
+            status=status.HTTP_200_OK
+        )
+    ```
 ⬆️ [Go to Context](#context)
 
 ## Email Configuration:
